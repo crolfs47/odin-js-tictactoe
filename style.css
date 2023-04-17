@@ -1,0 +1,22 @@
+h1 {
+  display: flex;
+  justify-content: center;
+}
+
+.grid-container {
+  display: flex;
+  justify-content: center;
+}
+
+.game-board-grid {
+  display: grid;
+  grid-template-columns: 60px 60px 60px;
+  grid-template-rows: 60px 60px 60px;
+}
+
+.square {
+  border: solid 1px black;
+  font-size: 20px;
+  text-align: center;
+  padding: 20px;
+}
