@@ -1,21 +1,41 @@
-// gameboard module
-const gameBoard = (function() {
-  let board = ['', '', '', '', '', '', '', '', ''];
-  return {
-  };
-}());
+// gameboard module //
+const gameBoardModule = (() => {
+  let boardArray = ['', '', '', '', '', '', '', '', ''];
+  const squares = document.querySelectorAll('.square');
 
-console.log(gameBoard.board);
+  squares.forEach((square) => {
+    square.addEventListener('click', () => {
+      // make move
+    });
+  });
+  
+  //mark square
+  //check if valid move
+  //check if winner
+})();
 
-// display module
-const displayController = (function() {
-  const gameBoardTable = document.querySelector('.game-board-table');
-  function displayGameBoard() {
-    
-  }
-}());
+console.log(gameBoard.boardArray);
 
-// players factory
-const Player = (name) => {
+// display module //
+const displayModule = (() => {
+})();
 
+// players factory //
+const playerFactory = (name, marker) => {
+  return {name, marker};
 };
+
+// gameplay module //
+const gamePlayModule = (() => {
+  let playerX;
+  let playerO;
+  let currentPlayer;
+  let turn = 0;
+
+  //start game
+  //take turn
+  //switch player
+  //check if winner or game over
+
+
+})();
