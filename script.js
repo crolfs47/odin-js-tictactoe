@@ -8,22 +8,21 @@ const gameBoardModule = (() => {
       // make move
     });
   });
-  
-  //mark square
-  //check if valid move
-  //check if winner
+
+  return { boardArray };
+  // mark square
+  // check if valid move
+  // check if winner
 })();
 
-console.log(gameBoard.boardArray);
+console.log(gameBoardModule.boardArray);
 
 // display module //
 const displayModule = (() => {
 })();
 
 // players factory //
-const playerFactory = (name, marker) => {
-  return {name, marker};
-};
+const playerFactory = (name, marker) => ({ name, marker });
 
 // gameplay module //
 const gamePlayModule = (() => {
@@ -31,11 +30,20 @@ const gamePlayModule = (() => {
   let playerO;
   let currentPlayer;
   let turn = 0;
+  const startButton = document.querySelector('.player-form');
 
-  //start game
-  //take turn
-  //switch player
-  //check if winner or game over
+  // start game
+  const startGame = (e) => {
+    e.preventDefault();
+    playerX = playerFactory(document.getElementById('playerXname').value, 'X');
+    playerO = playerFactory(document.getElementById('playerOname').value, 'O');
+    console.log(playerX.name);
+    console.log(playerO.marker);
+  };
 
+  startButton.addEventListener('submit', startGame);
 
+  // take turn
+  // switch player
+  // check if winner or game over
 })();
