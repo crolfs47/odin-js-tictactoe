@@ -4,8 +4,18 @@ const playerFactory = (name, marker) => ({ name, marker });
 // gameboard module ///////////////////////////////////////////
 const gameBoardModule = (() => {
   const boardArray = ['', '', '', '', '', '', '', '', ''];
+  const winningArrays = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6]];
   const squares = document.querySelectorAll('.square');
   const gameStatus = document.querySelector('.game-status');
+  let winner = null;
 
   const updateBoard = () => {
     squares.forEach((square, index) => {
@@ -23,11 +33,20 @@ const gameBoardModule = (() => {
     updateBoard();
   };
 
-  return {
-    boardArray, gameStatus, markSquare, checkMove,
+  const checkWinner = () => {
+    winningArrays.forEach((array) => {
+      if (boardArray[array[0]] !== ''
+        && boardArray[array[0]] === boardArray[array[1]]
+        && boardArray[array[1]] === boardArray[array[2]]) {
+        winner = true;
+      }
+    });
+    return winner;
   };
 
-  // check if winner
+  return {
+    boardArray, gameStatus, markSquare, checkMove, checkWinner,
+  };
 })();
 
 // gameplay module ///////////////////////////////////////////
@@ -35,7 +54,7 @@ const gamePlayModule = (() => {
   let playerX;
   let playerO;
   let currentPlayer;
-  let turn = 0;
+  let turnCount = 0;
   const startButton = document.querySelector('.player-form');
 
   const startGame = (e) => {
@@ -52,21 +71,32 @@ const gamePlayModule = (() => {
 
   const switchPlayers = () => {
     currentPlayer = currentPlayer === playerX ? playerO : playerX;
-  }
+  };
+
+  const gameOver = () => {
+    if (gameBoardModule.checkWinner() || turnCount === 8) {
+      return true;
+    }
+    return false;
+  };
 
   const takeTurn = (squareIndex) => {
     if (gameBoardModule.checkMove(squareIndex)) {
+      console.log(turnCount);
       gameBoardModule.markSquare(currentPlayer.marker, squareIndex);
-      switchPlayers();
-      gameBoardModule.gameStatus.textContent = `${currentPlayer.name}'s turn. Please click on a square.`;
-    }
-    else {
+      if (gameOver()) {
+        displayModule.showResult(currentPlayer.name);
+      } else {
+        turnCount += 1;
+        switchPlayers();
+        gameBoardModule.gameStatus.textContent = `${currentPlayer.name}'s turn. Please click on a square.`;
+      }
+    } else {
       gameBoardModule.gameStatus.textContent = 'Please select a valid square';
     }
   };
 
-  return { takeTurn };
-  // check if winner or game over
+  return { takeTurn, turnCount, currentPlayer };
 })();
 
 // display module ///////////////////////////////////////////
@@ -78,4 +108,14 @@ const displayModule = (() => {
       gamePlayModule.takeTurn(e.target.id);
     });
   });
+
+  const showResult = (player) => {
+    if (gameBoardModule.checkWinner()) {
+      gameBoardModule.gameStatus.textContent = `${player} wins!`;
+    } else {
+      gameBoardModule.gameStatus.textContent = "It's a tie!";
+    }
+  };
+
+  return { showResult };
 })();
