@@ -1,7 +1,7 @@
-// players factory //
+// players factory ///////////////////////////////////////////
 const playerFactory = (name, marker) => ({ name, marker });
 
-// gameboard module //
+// gameboard module ///////////////////////////////////////////
 const gameBoardModule = (() => {
   const boardArray = ['', '', '', '', '', '', '', '', ''];
   const squares = document.querySelectorAll('.square');
@@ -25,7 +25,7 @@ const gameBoardModule = (() => {
 
 console.log(gameBoardModule.boardArray);
 
-// gameplay module //
+// gameplay module ///////////////////////////////////////////
 const gamePlayModule = (() => {
   let playerX;
   let playerO;
@@ -37,13 +37,18 @@ const gamePlayModule = (() => {
     e.preventDefault();
     playerX = playerFactory(document.getElementById('playerXname').value, 'X');
     playerO = playerFactory(document.getElementById('playerOname').value, 'O');
+    currentPlayer = playerX;
   };
 
   startButton.addEventListener('submit', startGame);
 
+  const switchPlayers = () => {
+    currentPlayer = currentPlayer === playerX ? playerO : playerX;
+  }
+
   const takeTurn = (squareIndex) => {
-    currentPlayer = playerX;
     gameBoardModule.markSquare(currentPlayer.marker, squareIndex);
+    switchPlayers();
   };
 
   return { takeTurn };
@@ -52,7 +57,7 @@ const gamePlayModule = (() => {
   // check if winner or game over
 })();
 
-// display module //
+// display module ///////////////////////////////////////////
 const displayModule = (() => {
   const squares = document.querySelectorAll('.square');
 
