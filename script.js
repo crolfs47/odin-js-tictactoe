@@ -14,7 +14,6 @@ const gameBoardModule = (() => {
 
   const markSquare = (marker, index) => {
     boardArray[index] = marker;
-    console.log(boardArray);
     updateBoard();
   };
 
@@ -32,13 +31,16 @@ const gamePlayModule = (() => {
   let currentPlayer;
   let turn = 0;
   const startButton = document.querySelector('.player-form');
+  const gameStatus = document.querySelector('.game-status');
 
   const startGame = (e) => {
     e.preventDefault();
     playerX = playerFactory(document.getElementById('playerXname').value, 'X');
     playerO = playerFactory(document.getElementById('playerOname').value, 'O');
     currentPlayer = playerX;
+    gameStatus.textContent = `${currentPlayer.name}'s turn. Please click on a square.`;
   };
+  // only show gameboard after startgame and remove player form
 
   startButton.addEventListener('submit', startGame);
 
@@ -49,11 +51,10 @@ const gamePlayModule = (() => {
   const takeTurn = (squareIndex) => {
     gameBoardModule.markSquare(currentPlayer.marker, squareIndex);
     switchPlayers();
+    gameStatus.textContent = `${currentPlayer.name}'s turn. Please click on a square.`;
   };
 
   return { takeTurn };
-  // take turn
-  // switch player
   // check if winner or game over
 })();
 
