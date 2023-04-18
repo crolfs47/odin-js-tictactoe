@@ -14,7 +14,6 @@ const gameBoardModule = (() => {
     [0, 4, 8],
     [2, 4, 6]];
   const squares = document.querySelectorAll('.square');
-  const gameStatus = document.querySelector('.game-status');
   let winner = null;
 
   const updateBoard = () => {
@@ -45,7 +44,7 @@ const gameBoardModule = (() => {
   };
 
   return {
-    boardArray, gameStatus, markSquare, checkMove, checkWinner,
+    boardArray, markSquare, checkMove, checkWinner,
   };
 })();
 
@@ -62,7 +61,7 @@ const gamePlayModule = (() => {
     playerX = playerFactory(document.getElementById('playerXname').value, 'X');
     playerO = playerFactory(document.getElementById('playerOname').value, 'O');
     currentPlayer = playerX;
-    gameBoardModule.gameStatus.textContent = `${currentPlayer.name}'s turn. Please click on a square.`;
+    displayModule.showTurn(currentPlayer.name);
   };
   // only start game if names are entered
   // only show gameboard after startgame and remove player form
@@ -89,10 +88,10 @@ const gamePlayModule = (() => {
       } else {
         turnCount += 1;
         switchPlayers();
-        gameBoardModule.gameStatus.textContent = `${currentPlayer.name}'s turn. Please click on a square.`;
+        displayModule.showTurn(currentPlayer.name);
       }
     } else {
-      gameBoardModule.gameStatus.textContent = 'Please select a valid square';
+      displayModule.makeValidPick();
     }
   };
 
@@ -102,6 +101,7 @@ const gamePlayModule = (() => {
 // display module ///////////////////////////////////////////
 const displayModule = (() => {
   const squares = document.querySelectorAll('.square');
+  const gameStatus = document.querySelector('.game-status');
 
   squares.forEach((square) => {
     square.addEventListener('click', (e) => {
@@ -109,13 +109,21 @@ const displayModule = (() => {
     });
   });
 
+  const showTurn = (player) => {
+    gameStatus.textContent = `${player}'s turn. Please click on a square.`;
+  };
+
+  const makeValidPick = () =>{
+    gameStatus.textContent = 'Please select a valid square';
+  }
+
   const showResult = (player) => {
     if (gameBoardModule.checkWinner()) {
-      gameBoardModule.gameStatus.textContent = `${player} wins!`;
+      gameStatus.textContent = `${player} wins!`;
     } else {
-      gameBoardModule.gameStatus.textContent = "It's a tie!";
+      gameStatus.textContent = "It's a tie!";
     }
   };
 
-  return { showResult };
+  return { showResult, gameStatus, showTurn, makeValidPick };
 })();
