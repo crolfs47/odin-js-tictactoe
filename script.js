@@ -5,6 +5,7 @@ const playerFactory = (name, marker) => ({ name, marker });
 const gameBoardModule = (() => {
   const boardArray = ['', '', '', '', '', '', '', '', ''];
   const squares = document.querySelectorAll('.square');
+  const gameStatus = document.querySelector('.game-status');
 
   const updateBoard = () => {
     squares.forEach((square, index) => {
@@ -12,17 +13,22 @@ const gameBoardModule = (() => {
     });
   };
 
+  const checkMove = (index) => {
+    const validMove = !((boardArray[index] === 'X' || boardArray[index] === 'O'));
+    return validMove;
+  };
+
   const markSquare = (marker, index) => {
     boardArray[index] = marker;
     updateBoard();
   };
 
-  return { boardArray, markSquare };
-  // check if valid move
+  return {
+    boardArray, gameStatus, markSquare, checkMove,
+  };
+
   // check if winner
 })();
-
-console.log(gameBoardModule.boardArray);
 
 // gameplay module ///////////////////////////////////////////
 const gamePlayModule = (() => {
@@ -31,15 +37,15 @@ const gamePlayModule = (() => {
   let currentPlayer;
   let turn = 0;
   const startButton = document.querySelector('.player-form');
-  const gameStatus = document.querySelector('.game-status');
 
   const startGame = (e) => {
     e.preventDefault();
     playerX = playerFactory(document.getElementById('playerXname').value, 'X');
     playerO = playerFactory(document.getElementById('playerOname').value, 'O');
     currentPlayer = playerX;
-    gameStatus.textContent = `${currentPlayer.name}'s turn. Please click on a square.`;
+    gameBoardModule.gameStatus.textContent = `${currentPlayer.name}'s turn. Please click on a square.`;
   };
+  // only start game if names are entered
   // only show gameboard after startgame and remove player form
 
   startButton.addEventListener('submit', startGame);
@@ -49,9 +55,14 @@ const gamePlayModule = (() => {
   }
 
   const takeTurn = (squareIndex) => {
-    gameBoardModule.markSquare(currentPlayer.marker, squareIndex);
-    switchPlayers();
-    gameStatus.textContent = `${currentPlayer.name}'s turn. Please click on a square.`;
+    if (gameBoardModule.checkMove(squareIndex)) {
+      gameBoardModule.markSquare(currentPlayer.marker, squareIndex);
+      switchPlayers();
+      gameBoardModule.gameStatus.textContent = `${currentPlayer.name}'s turn. Please click on a square.`;
+    }
+    else {
+      gameBoardModule.gameStatus.textContent = 'Please select a valid square';
+    }
   };
 
   return { takeTurn };
