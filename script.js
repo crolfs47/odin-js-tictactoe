@@ -1,16 +1,27 @@
 // gameboard module //
 const gameBoardModule = (() => {
-  let boardArray = ['', '', '', '', '', '', '', '', ''];
+  const boardArray = ['', '', '', '', '', '', '', '', ''];
   const squares = document.querySelectorAll('.square');
 
+  const updateBoard = () => {
+    squares.forEach((square, index) => {
+      square.textContent = boardArray[index];
+    });
+  };
+
+  const markSquare = (index) => {
+    boardArray[index] = 'X';
+    console.log(boardArray);
+    updateBoard();
+  };
+
   squares.forEach((square) => {
-    square.addEventListener('click', () => {
-      // make move
+    square.addEventListener('click', (e) => {
+      markSquare(e.target.id);
     });
   });
 
   return { boardArray };
-  // mark square
   // check if valid move
   // check if winner
 })();
