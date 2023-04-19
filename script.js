@@ -29,8 +29,10 @@ const gameBoardModule = (() => {
   };
 
   const markSquare = (marker, index) => {
-    boardArray[index] = marker;
-    updateBoard();
+    if (!gamePlayModule.checkGameOver()) {
+      boardArray[index] = marker;
+      updateBoard();
+    }
   };
 
   const checkWinner = () => {
@@ -78,7 +80,7 @@ const gamePlayModule = (() => {
     currentPlayer = currentPlayer === playerX ? playerO : playerX;
   };
 
-  const gameOver = () => {
+  const checkGameOver = () => {
     if (gameBoardModule.checkWinner() || turnCount === 8) {
       return true;
     }
@@ -87,9 +89,8 @@ const gamePlayModule = (() => {
 
   const takeTurn = (squareIndex) => {
     if (gameBoardModule.checkMove(squareIndex)) {
-      console.log(turnCount);
       gameBoardModule.markSquare(currentPlayer.marker, squareIndex);
-      if (gameOver()) {
+      if (checkGameOver()) {
         displayModule.showResult(currentPlayer.name);
       } else {
         turnCount += 1;
@@ -101,7 +102,9 @@ const gamePlayModule = (() => {
     }
   };
 
-  return { takeTurn, turnCount, currentPlayer };
+  return {
+    takeTurn, turnCount, currentPlayer, checkGameOver,
+  };
 })();
 
 // display module ///////////////////////////////////////////
@@ -135,5 +138,7 @@ const displayModule = (() => {
     elementName.classList.toggle('hidden');
   };
 
-  return { showResult, gameStatus, showTurn, showAlert, toggleHiddenClass };
+  return {
+    showResult, gameStatus, showTurn, showAlert, toggleHiddenClass,
+  };
 })();
