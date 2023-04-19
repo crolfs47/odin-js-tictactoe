@@ -53,91 +53,21 @@ const gameBoardModule = (() => {
   const checkTie = () => !boardArray.includes('');
 
   return {
-    boardArray, markSquare, checkMove, checkWinner, checkTie, gameBoard, updateBoard, resetBoard,
-  };
-})();
-
-// gameplay module ///////////////////////////////////////////
-const gamePlayModule = (() => {
-  let playerX;
-  let playerO;
-  let currentPlayer;
-  let turnCount = 0;
-  const playerForm = document.querySelector('.player-form');
-  const newGameButton = document.querySelector('.new-game-button');
-
-  const startGame = (e) => {
-    e.preventDefault();
-    playerX = playerFactory(document.getElementById('playerXname').value, 'X');
-    playerO = playerFactory(document.getElementById('playerOname').value, 'O');
-    if (playerX.name === '' || playerO.name === '') {
-      displayModule.showAlert('Please enter a name for each player');
-    }
-    else {
-      currentPlayer = playerX;
-      displayModule.toggleHiddenClass(playerForm);
-      displayModule.toggleHiddenClass(gameBoardModule.gameBoard);
-      displayModule.toggleHiddenClass(newGameButton);
-      displayModule.toggleHiddenClass(displayModule.gameStatus);
-      displayModule.showTurn(currentPlayer.name);
-    }
-  };
-
-  playerForm.addEventListener('submit', startGame);
-
-  const newGame = () => {
-    gameBoardModule.resetBoard();
-    turnCount = 0;
-    displayModule.toggleHiddenClass(playerForm);
-    displayModule.toggleHiddenClass(gameBoardModule.gameBoard);
-    displayModule.toggleHiddenClass(newGameButton);
-    displayModule.toggleHiddenClass(displayModule.gameStatus);
-  };
-
-  newGameButton.addEventListener('click', newGame);
-
-  const switchPlayers = () => {
-    currentPlayer = currentPlayer === playerX ? playerO : playerX;
-  };
-
-  const checkGameOver = () => gameBoardModule.checkWinner() || gameBoardModule.checkTie();
-
-  const takeTurn = (squareIndex) => {
-    if (gameBoardModule.checkMove(squareIndex)) {
-      gameBoardModule.markSquare(currentPlayer.marker, squareIndex);
-      if (checkGameOver()) {
-        displayModule.showResult(currentPlayer.name);
-      } else {
-        turnCount += 1;
-        switchPlayers();
-        displayModule.showTurn(currentPlayer.name);
-      }
-    } else {
-      displayModule.showAlert('Please select a valid square');
-    }
-  };
-
-  return {
-    takeTurn, turnCount, currentPlayer, checkGameOver,
+    squares,
+    boardArray,
+    markSquare,
+    checkMove,
+    checkWinner,
+    checkTie,
+    gameBoard,
+    updateBoard,
+    resetBoard,
   };
 })();
 
 // display module ///////////////////////////////////////////
 const displayModule = (() => {
-  const squares = document.querySelectorAll('.square');
   const gameStatus = document.querySelector('.game-status');
-
-  const clickSquares = () => {
-    squares.forEach((square) => {
-      square.addEventListener('click', (e) => {
-        if (!gamePlayModule.checkGameOver()) {
-          gamePlayModule.takeTurn(e.target.id);
-        }
-      });
-    });
-  };
-
-  clickSquares();
 
   const showTurn = (player) => {
     gameStatus.textContent = `${player}'s turn. Please click on a square.`;
@@ -162,4 +92,74 @@ const displayModule = (() => {
   return {
     showResult, gameStatus, showTurn, showAlert, toggleHiddenClass,
   };
+})();
+
+// gameplay module ///////////////////////////////////////////
+const gamePlayModule = (() => {
+  let playerX;
+  let playerO;
+  let currentPlayer;
+  const playerForm = document.querySelector('.player-form');
+  const newGameButton = document.querySelector('.new-game-button');
+
+  const startGame = (e) => {
+    e.preventDefault();
+    playerX = playerFactory(document.getElementById('playerXname').value, 'X');
+    playerO = playerFactory(document.getElementById('playerOname').value, 'O');
+    if (playerX.name === '' || playerO.name === '') {
+      displayModule.showAlert('Please enter a name for each player');
+    }
+    else {
+      currentPlayer = playerX;
+      displayModule.toggleHiddenClass(playerForm);
+      displayModule.toggleHiddenClass(gameBoardModule.gameBoard);
+      displayModule.toggleHiddenClass(newGameButton);
+      displayModule.toggleHiddenClass(displayModule.gameStatus);
+      displayModule.showTurn(currentPlayer.name);
+    }
+  };
+
+  playerForm.addEventListener('submit', startGame);
+
+  const newGame = () => {
+    gameBoardModule.resetBoard();
+    displayModule.toggleHiddenClass(playerForm);
+    displayModule.toggleHiddenClass(gameBoardModule.gameBoard);
+    displayModule.toggleHiddenClass(newGameButton);
+    displayModule.toggleHiddenClass(displayModule.gameStatus);
+  };
+
+  newGameButton.addEventListener('click', newGame);
+
+  const switchPlayers = () => {
+    currentPlayer = currentPlayer === playerX ? playerO : playerX;
+  };
+
+  const checkGameOver = () => gameBoardModule.checkWinner() || gameBoardModule.checkTie();
+
+  const takeTurn = (squareIndex) => {
+    if (gameBoardModule.checkMove(squareIndex)) {
+      gameBoardModule.markSquare(currentPlayer.marker, squareIndex);
+      if (checkGameOver()) {
+        displayModule.showResult(currentPlayer.name);
+      } else {
+        switchPlayers();
+        displayModule.showTurn(currentPlayer.name);
+      }
+    } else {
+      displayModule.showAlert('Please select a valid square');
+    }
+  };
+
+  const clickSquares = () => {
+    gameBoardModule.squares.forEach((square) => {
+      square.addEventListener('click', (e) => {
+        if (!checkGameOver()) {
+          takeTurn(e.target.id);
+        }
+      });
+    });
+  };
+
+  clickSquares();
 })();
