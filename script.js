@@ -52,8 +52,10 @@ const gameBoardModule = (() => {
     return winner;
   };
 
+  const checkTie = () => !boardArray.includes('');
+
   return {
-    boardArray, markSquare, checkMove, checkWinner, gameBoard, updateBoard, resetBoard,
+    boardArray, markSquare, checkMove, checkWinner, checkTie, gameBoard, updateBoard, resetBoard,
   };
 })();
 
@@ -88,7 +90,6 @@ const gamePlayModule = (() => {
   const newGame = () => {
     gameBoardModule.resetBoard();
     turnCount = 0;
-    console.log(gameBoardModule.boardArray);
     displayModule.toggleHiddenClass(playerForm);
     displayModule.toggleHiddenClass(gameBoardModule.gameBoard);
     displayModule.toggleHiddenClass(newGameButton);
@@ -101,12 +102,7 @@ const gamePlayModule = (() => {
     currentPlayer = currentPlayer === playerX ? playerO : playerX;
   };
 
-  const checkGameOver = () => {
-    if (gameBoardModule.checkWinner() || turnCount === 8) {
-      return true;
-    }
-    return false;
-  };
+  const checkGameOver = () => gameBoardModule.checkWinner() || gameBoardModule.checkTie();
 
   const takeTurn = (squareIndex) => {
     if (gameBoardModule.checkMove(squareIndex)) {
@@ -117,7 +113,6 @@ const gamePlayModule = (() => {
         turnCount += 1;
         switchPlayers();
         displayModule.showTurn(currentPlayer.name);
-        console.log(turnCount);
       }
     } else {
       displayModule.showAlert('Please select a valid square');
