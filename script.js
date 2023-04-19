@@ -14,6 +14,7 @@ const gameBoardModule = (() => {
     [0, 4, 8],
     [2, 4, 6]];
   const squares = document.querySelectorAll('.square');
+  const gameBoard = document.querySelector('.game-board-grid');
   let winner = null;
 
   const updateBoard = () => {
@@ -44,7 +45,7 @@ const gameBoardModule = (() => {
   };
 
   return {
-    boardArray, markSquare, checkMove, checkWinner,
+    boardArray, markSquare, checkMove, checkWinner, gameBoard,
   };
 })();
 
@@ -60,12 +61,16 @@ const gamePlayModule = (() => {
     e.preventDefault();
     playerX = playerFactory(document.getElementById('playerXname').value, 'X');
     playerO = playerFactory(document.getElementById('playerOname').value, 'O');
-    currentPlayer = playerX;
-    displayModule.toggleHiddenClass(playerForm);
-    displayModule.showTurn(currentPlayer.name);
+    if (playerX.name ==='' || playerO.name === '') {
+      displayModule.showAlert('Please enter a name for each player');
+    }
+    else {
+      currentPlayer = playerX;
+      displayModule.toggleHiddenClass(playerForm);
+      displayModule.toggleHiddenClass(gameBoardModule.gameBoard);
+      displayModule.showTurn(currentPlayer.name);
+    }
   };
-  // only start game if names are entered
-  // only show gameboard after startgame and remove player form
 
   playerForm.addEventListener('submit', startGame);
 
@@ -92,7 +97,7 @@ const gamePlayModule = (() => {
         displayModule.showTurn(currentPlayer.name);
       }
     } else {
-      displayModule.makeValidPick();
+      displayModule.showAlert('Please select a valid square');
     }
   };
 
@@ -114,9 +119,9 @@ const displayModule = (() => {
     gameStatus.textContent = `${player}'s turn. Please click on a square.`;
   };
 
-  const makeValidPick = () =>{
-    gameStatus.textContent = 'Please select a valid square';
-  }
+  const showAlert = (alert) => {
+    gameStatus.textContent = alert;
+  };
 
   const showResult = (player) => {
     if (gameBoardModule.checkWinner()) {
@@ -130,5 +135,5 @@ const displayModule = (() => {
     elementName.classList.toggle('hidden');
   };
 
-  return { showResult, gameStatus, showTurn, makeValidPick, toggleHiddenClass };
+  return { showResult, gameStatus, showTurn, showAlert, toggleHiddenClass };
 })();
