@@ -35,10 +35,8 @@ const gameBoardModule = (() => {
   };
 
   const markSquare = (marker, index) => {
-    if (!gamePlayModule.checkGameOver()) {
-      boardArray[index] = marker;
-      updateBoard();
-    }
+    boardArray[index] = marker;
+    updateBoard();
   };
 
   const checkWinner = () => {
@@ -72,7 +70,7 @@ const gamePlayModule = (() => {
     e.preventDefault();
     playerX = playerFactory(document.getElementById('playerXname').value, 'X');
     playerO = playerFactory(document.getElementById('playerOname').value, 'O');
-    if (playerX.name ==='' || playerO.name === '') {
+    if (playerX.name === '' || playerO.name === '') {
       displayModule.showAlert('Please enter a name for each player');
     }
     else {
@@ -129,11 +127,17 @@ const displayModule = (() => {
   const squares = document.querySelectorAll('.square');
   const gameStatus = document.querySelector('.game-status');
 
-  squares.forEach((square) => {
-    square.addEventListener('click', (e) => {
-      gamePlayModule.takeTurn(e.target.id);
+  const clickSquares = () => {
+    squares.forEach((square) => {
+      square.addEventListener('click', (e) => {
+        if (!gamePlayModule.checkGameOver()) {
+          gamePlayModule.takeTurn(e.target.id);
+        }
+      });
     });
-  });
+  };
+
+  clickSquares();
 
   const showTurn = (player) => {
     gameStatus.textContent = `${player}'s turn. Please click on a square.`;
