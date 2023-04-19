@@ -1,6 +1,12 @@
+body {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  background-color: rgb(92, 154, 128);
+}
+
 h1 {
   display: flex;
   justify-content: center;
+  color: rgb(31, 61, 48)
 }
 
 .grid-container {

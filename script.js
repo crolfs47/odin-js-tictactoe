@@ -29,10 +29,7 @@ const gameBoardModule = (() => {
     winner = null;
   };
 
-  const checkMove = (index) => {
-    const validMove = !((boardArray[index] === 'X' || boardArray[index] === 'O'));
-    return validMove;
-  };
+  const checkValidMove = (index) => !(boardArray[index] === 'X' || boardArray[index] === 'O');
 
   const markSquare = (marker, index) => {
     boardArray[index] = marker;
@@ -54,13 +51,11 @@ const gameBoardModule = (() => {
 
   return {
     squares,
-    boardArray,
+    gameBoard,
     markSquare,
-    checkMove,
+    checkValidMove,
     checkWinner,
     checkTie,
-    gameBoard,
-    updateBoard,
     resetBoard,
   };
 })();
@@ -108,13 +103,11 @@ const gamePlayModule = (() => {
     playerO = playerFactory(document.getElementById('playerOname').value, 'O');
     if (playerX.name === '' || playerO.name === '') {
       displayModule.showAlert('Please enter a name for each player');
-    }
-    else {
+    } else {
       currentPlayer = playerX;
       displayModule.toggleHiddenClass(playerForm);
       displayModule.toggleHiddenClass(gameBoardModule.gameBoard);
       displayModule.toggleHiddenClass(newGameButton);
-      displayModule.toggleHiddenClass(displayModule.gameStatus);
       displayModule.showTurn(currentPlayer.name);
     }
   };
@@ -126,7 +119,7 @@ const gamePlayModule = (() => {
     displayModule.toggleHiddenClass(playerForm);
     displayModule.toggleHiddenClass(gameBoardModule.gameBoard);
     displayModule.toggleHiddenClass(newGameButton);
-    displayModule.toggleHiddenClass(displayModule.gameStatus);
+    displayModule.showAlert('');
   };
 
   newGameButton.addEventListener('click', newGame);
@@ -138,7 +131,7 @@ const gamePlayModule = (() => {
   const checkGameOver = () => gameBoardModule.checkWinner() || gameBoardModule.checkTie();
 
   const takeTurn = (squareIndex) => {
-    if (gameBoardModule.checkMove(squareIndex)) {
+    if (gameBoardModule.checkValidMove(squareIndex)) {
       gameBoardModule.markSquare(currentPlayer.marker, squareIndex);
       if (checkGameOver()) {
         displayModule.showResult(currentPlayer.name);
