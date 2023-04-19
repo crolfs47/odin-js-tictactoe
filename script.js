@@ -54,19 +54,20 @@ const gamePlayModule = (() => {
   let playerO;
   let currentPlayer;
   let turnCount = 0;
-  const startButton = document.querySelector('.player-form');
+  const playerForm = document.querySelector('.player-form');
 
   const startGame = (e) => {
     e.preventDefault();
     playerX = playerFactory(document.getElementById('playerXname').value, 'X');
     playerO = playerFactory(document.getElementById('playerOname').value, 'O');
     currentPlayer = playerX;
+    displayModule.toggleHiddenClass(playerForm);
     displayModule.showTurn(currentPlayer.name);
   };
   // only start game if names are entered
   // only show gameboard after startgame and remove player form
 
-  startButton.addEventListener('submit', startGame);
+  playerForm.addEventListener('submit', startGame);
 
   const switchPlayers = () => {
     currentPlayer = currentPlayer === playerX ? playerO : playerX;
@@ -125,5 +126,9 @@ const displayModule = (() => {
     }
   };
 
-  return { showResult, gameStatus, showTurn, makeValidPick };
+  const toggleHiddenClass = (elementName) => {
+    elementName.classList.toggle('hidden');
+  };
+
+  return { showResult, gameStatus, showTurn, makeValidPick, toggleHiddenClass };
 })();
