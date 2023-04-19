@@ -3,7 +3,7 @@ const playerFactory = (name, marker) => ({ name, marker });
 
 // gameboard module ///////////////////////////////////////////
 const gameBoardModule = (() => {
-  const boardArray = ['', '', '', '', '', '', '', '', ''];
+  let boardArray = ['', '', '', '', '', '', '', '', ''];
   const winningArrays = [
     [0, 1, 2],
     [3, 4, 5],
@@ -21,6 +21,12 @@ const gameBoardModule = (() => {
     squares.forEach((square, index) => {
       square.textContent = boardArray[index];
     });
+  };
+
+  const resetBoard = () => {
+    boardArray = ['', '', '', '', '', '', '', '', ''];
+    updateBoard();
+    winner = null;
   };
 
   const checkMove = (index) => {
@@ -47,7 +53,7 @@ const gameBoardModule = (() => {
   };
 
   return {
-    boardArray, markSquare, checkMove, checkWinner, gameBoard,
+    boardArray, markSquare, checkMove, checkWinner, gameBoard, updateBoard, resetBoard,
   };
 })();
 
@@ -58,6 +64,7 @@ const gamePlayModule = (() => {
   let currentPlayer;
   let turnCount = 0;
   const playerForm = document.querySelector('.player-form');
+  const newGameButton = document.querySelector('.new-game-button');
 
   const startGame = (e) => {
     e.preventDefault();
@@ -70,11 +77,25 @@ const gamePlayModule = (() => {
       currentPlayer = playerX;
       displayModule.toggleHiddenClass(playerForm);
       displayModule.toggleHiddenClass(gameBoardModule.gameBoard);
+      displayModule.toggleHiddenClass(newGameButton);
+      displayModule.toggleHiddenClass(displayModule.gameStatus);
       displayModule.showTurn(currentPlayer.name);
     }
   };
 
   playerForm.addEventListener('submit', startGame);
+
+  const newGame = () => {
+    gameBoardModule.resetBoard();
+    turnCount = 0;
+    console.log(gameBoardModule.boardArray);
+    displayModule.toggleHiddenClass(playerForm);
+    displayModule.toggleHiddenClass(gameBoardModule.gameBoard);
+    displayModule.toggleHiddenClass(newGameButton);
+    displayModule.toggleHiddenClass(displayModule.gameStatus);
+  };
+
+  newGameButton.addEventListener('click', newGame);
 
   const switchPlayers = () => {
     currentPlayer = currentPlayer === playerX ? playerO : playerX;
@@ -96,6 +117,7 @@ const gamePlayModule = (() => {
         turnCount += 1;
         switchPlayers();
         displayModule.showTurn(currentPlayer.name);
+        console.log(turnCount);
       }
     } else {
       displayModule.showAlert('Please select a valid square');
